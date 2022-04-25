@@ -4,18 +4,18 @@ set -e  # if a command fails it stops the execution
 set -u  # script fails if trying to access to an undefined variable
 
 echo "[+] Action start"
-TARGET_FILE="${1}"
-SED_REGEX_MATCH="${2}"
-SED_NEW_VALUE="${3}"
-DESTINATION_GITHUB_USERNAME="${4}"
-DESTINATION_REPOSITORY_NAME="${5}"
-GITHUB_SERVER="${6}"
-USER_EMAIL="${7}"
-USER_NAME="${8}"
-DESTINATION_REPOSITORY_USERNAME="${9}"
-TARGET_BRANCH="${10}"
-COMMIT_MESSAGE="${11}"
-TARGET_DIRECTORY="${12}"
+TARGET_FILE="${0}"
+SED_REGEX_MATCH="${1}"
+SED_NEW_VALUE="${2}"
+DESTINATION_GITHUB_USERNAME="${3}"
+DESTINATION_REPOSITORY_NAME="${4}"
+GITHUB_SERVER="${5}"
+USER_EMAIL="${6}"
+USER_NAME="${7}"
+DESTINATION_REPOSITORY_USERNAME="${8}"
+TARGET_BRANCH="${9}"
+COMMIT_MESSAGE="${10}"
+TARGET_DIRECTORY="${11}"
 
 if [ -z "$DESTINATION_REPOSITORY_USERNAME" ]
 then
@@ -41,7 +41,7 @@ git config --global user.name "$USER_NAME"
 	echo "::error::git clone --single-branch --branch $TARGET_BRANCH https://$USER_NAME:the_api_token@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git $CLONE_DIR"
 	echo "::error::(Note that the USER_NAME and API_TOKEN is redacted by GitHub)"
 	echo "::error::Please verify that the target repository exist AND that it contains the destination branch name, and is accesible by the API_TOKEN_GITHUB"
-	exit 1
+	exit 0
 
 }
 ls -la "$CLONE_DIR"
