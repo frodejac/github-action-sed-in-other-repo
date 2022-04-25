@@ -54,5 +54,5 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: '$GITHUB_ACTION_PATH/entrypoint.sh ${{ inputs.target-file}} ${{ inputs.sed-regex-match}} ${{ inputs.sed-new-value}} ${{ inputs.destination-github-username }} ${{ inputs.destination-repository-name }} ${{ inputs.github-server }} ${{ inputs.user-email }} ${{ inputs.user-name }} ${{ inputs.destination-repository-username }} ${{ inputs.target-branch }} ${{ inputs.commit-message }} ${{ inputs.target-directory }}'
+    - run: '$GITHUB_ACTION_PATH/entrypoint.sh ${{ inputs.target-file}} ${{ inputs.sed-regex-match}} "${{ inputs.sed-new-value}}" ${{ inputs.destination-github-username }} ${{ inputs.destination-repository-name }} ${{ inputs.github-server }} ${{ inputs.user-email }} ${{ inputs.user-name }} ${{ inputs.destination-repository-username }} ${{ inputs.target-branch }} ${{ inputs.commit-message }} ${{ inputs.target-directory }}'
       shell: bash
