@@ -94,7 +94,7 @@ echo "[+] Pushing git commit"
 n=0
 until [ "$n" -ge 5 ]
 do
-  git pull --no-edit
+  git pull --rebase
 	git push "https://$USER_NAME:$API_TOKEN_GITHUB@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git" --set-upstream "$TARGET_BRANCH"  && break
   n=$((n+1))
   sleep 5
