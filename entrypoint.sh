@@ -43,6 +43,7 @@ echo "[+] Configuring SSH"
 mkdir -p ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 echo -n "$DEPLOY_KEY" >> ~/.ssh/id_rsa
+chmod 0600 ~/.ssh/id_rsa
 
 echo "[+] Cloning destination git repository $DESTINATION_REPOSITORY_NAME"
 # Setup git
