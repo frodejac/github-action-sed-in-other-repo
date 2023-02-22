@@ -40,13 +40,12 @@ fi
 CLONE_DIR=$(mktemp -d)
 
 echo "[+] Configuring SSH"
+
+eval "$(ssh-agent -s)"
+ssh-add <(echo "$DEPLOY_KEY")
 mkdir -p ~/.ssh
+chmod 700 ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
-echo -n "$DEPLOY_KEY" >> ~/.ssh/id_rsa
-chmod 0600 ~/.ssh/id_rsa
-SSH_AUTH_SOCK="/tmp/ssh_agent.sock"
-eval `ssh-agent -s -a $SSH_AUTH_SOCK > /dev/null`
-ssh-add ~/.ssh/id_rsa
 
 echo "[+] Cloning destination git repository $DESTINATION_REPOSITORY_NAME"
 # Setup git
