@@ -45,7 +45,7 @@ ssh-keyscan github.com >> ~/.ssh/known_hosts
 echo -n "$DEPLOY_KEY" >> ~/.ssh/id_rsa
 chmod 0600 ~/.ssh/id_rsa
 SSH_AUTH_SOCK="/tmp/ssh_agent.sock"
-ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+eval `ssh-agent -s -a $SSH_AUTH_SOCK > /dev/null`
 ssh-add ~/.ssh/id_rsa
 
 echo "[+] Cloning destination git repository $DESTINATION_REPOSITORY_NAME"
