@@ -30,7 +30,6 @@ echo " COMMIT_MESSAGE =  ${COMMIT_MESSAGE}"
 echo " TARGET_DIRECTORY =  ${TARGET_DIRECTORY}"
 
 
-
 DESTINATION_REPOSITORY_USERNAME="$DESTINATION_GITHUB_USERNAME"
 
 if [ -z "$USER_NAME" ]
@@ -40,18 +39,22 @@ fi
 
 CLONE_DIR=$(mktemp -d)
 
+echo "[+] Configuring SSH"
+mkdir -p ~/.ssh
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+echo -n "$DEPLOY_KEY" >> ~/.ssh/id_rsa
+
 echo "[+] Cloning destination git repository $DESTINATION_REPOSITORY_NAME"
 # Setup git
 git config --global user.email "$USER_EMAIL"
 git config --global user.name "$USER_NAME"
 
 {
-	git clone --single-branch --branch "$TARGET_BRANCH" "https://$USER_NAME:$API_TOKEN_GITHUB@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git" "$CLONE_DIR"
+	git clone --single-branch --branch "$TARGET_BRANCH" "git@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git" "$CLONE_DIR"
 } || {
 	echo "::error::Could not clone the destination repository. Command:"
-	echo "::error::git clone --single-branch --branch $TARGET_BRANCH https://$USER_NAME:the_api_token@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git $CLONE_DIR"
-	echo "::error::(Note that the USER_NAME and API_TOKEN is redacted by GitHub)"
-	echo "::error::Please verify that the target repository exist AND that it contains the destination branch name, and is accesible by the API_TOKEN_GITHUB"
+	echo "::error::git clone --single-branch --branch $TARGET_BRANCH git@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git $CLONE_DIR"
+	echo "::error::Please verify that the target repository exist AND that it contains the destination branch name, and is accesible by the DEPLOY_KEY"
 	exit 0
 
 }
@@ -95,7 +98,7 @@ n=0
 until [ "$n" -ge 5 ]
 do
   git pull --rebase
-	git push "https://$USER_NAME:$API_TOKEN_GITHUB@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git" --set-upstream "$TARGET_BRANCH"  && break
+	git push "git@$GITHUB_SERVER/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git" --set-upstream "$TARGET_BRANCH"  && break
   n=$((n+1))
   sleep 5
 done
