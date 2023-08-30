@@ -1,15 +1,12 @@
-name: Run sed to replace in side a file in another repository
+name: Run sed to replace text inside a file in another repository
 description: >-
-  Usefull to update docker container tags in a gitops setup for automatically triggering deploy
+  Useful for updating docker container tags in a gitops setup for automatically triggering deploy
 inputs:
   target-file:
     description: The file to run the sed command on
     required: true
-  sed-regex-match:
-    description: the regex match to find and replace
-    required: true
-  sed-new-value:
-    description: The string to fill in
+  sed-command:
+    description: The sed command to run
     required: true
   destination-github-username:
     description: Name of the destination username/organization
@@ -50,5 +47,5 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: '$GITHUB_ACTION_PATH/entrypoint.sh ${{ inputs.target-file}} ${{ inputs.sed-regex-match}} "${{ inputs.sed-new-value}}" ${{ inputs.destination-github-username }} ${{ inputs.destination-repository-name }} ${{ inputs.github-server }} ${{ inputs.user-email }} ${{ inputs.user-name }} ${{ inputs.target-branch }} ${{ inputs.commit-message }} ${{ inputs.target-directory }}'
+    - run: '$GITHUB_ACTION_PATH/entrypoint.sh ${{ inputs.target-file }} ${{ inputs.sed-command }} ${{ inputs.destination-github-username }} ${{ inputs.destination-repository-name }} ${{ inputs.github-server }} ${{ inputs.user-email }} ${{ inputs.user-name }} ${{ inputs.target-branch }} ${{ inputs.commit-message }} ${{ inputs.target-directory }}'
       shell: bash

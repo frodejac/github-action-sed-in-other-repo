@@ -5,21 +5,19 @@ set -u  # script fails if trying to access to an undefined variable
 
 echo "[+] Action start"
 TARGET_FILE="${1}"
-SED_REGEX_MATCH="${2}"
-SED_NEW_VALUE="${3}"
-DESTINATION_GITHUB_USERNAME="${4}"
-DESTINATION_REPOSITORY_NAME="${5}"
-GITHUB_SERVER="${6}"
-USER_EMAIL="${7}"
-USER_NAME="${8}"
-TARGET_BRANCH="${9}"
-COMMIT_MESSAGE="${10}"
-TARGET_DIRECTORY="${11}"
+SED_COMMAND="${2}"
+DESTINATION_GITHUB_USERNAME="${3}"
+DESTINATION_REPOSITORY_NAME="${4}"
+GITHUB_SERVER="${5}"
+USER_EMAIL="${6}"
+USER_NAME="${7}"
+TARGET_BRANCH="${8}"
+COMMIT_MESSAGE="${9}"
+TARGET_DIRECTORY="${10}"
 
 
 echo " TARGET_FILE =  ${TARGET_FILE}"
-echo " SED_REGEX_MATCH =  ${SED_REGEX_MATCH}"
-echo " SED_NEW_VALUE =  ${SED_NEW_VALUE}"
+echo " SED_COMMAND =  ${SED_COMMAND}"
 echo " DESTINATION_GITHUB_USERNAME =  ${DESTINATION_GITHUB_USERNAME}"
 echo " DESTINATION_REPOSITORY_NAME =  ${DESTINATION_REPOSITORY_NAME}"
 echo " GITHUB_SERVER =  ${GITHUB_SERVER}"
@@ -66,23 +64,16 @@ ls -la "$CLONE_DIR"
 
 echo "[+] Running sed command on file $TARGET_FILE in $CLONE_DIR"
 echo "[+] running now"
-echo "sed -i 's/$SED_REGEX_MATCH/$SED_NEW_VALUE/g' $CLONE_DIR/$TARGET_FILE"
-sed 's/'"$SED_REGEX_MATCH"'/'"$SED_NEW_VALUE"'/g' $CLONE_DIR/$TARGET_FILE
-sed -i 's/'"$SED_REGEX_MATCH"'/'"$SED_NEW_VALUE"'/g' $CLONE_DIR/$TARGET_FILE
-
-# echo "awk '{sub(/$SED_REGEX_MATCH/,"$SED_NEW_VALUE"); print}'  $CLONE_DIR/$TARGET_FILE "
-# awk '{sub(/$SED_REGEX_MATCH/,$SED_NEW_VALUE); print}'  $CLONE_DIR/$TARGET_FILE
-# echo "first succeeded"
-
-# awk '{sub(/$SED_REGEX_MATCH/,$SED_NEW_VALUE); print}'  $CLONE_DIR/$TARGET_FILE > tmpfile && mv tmpfile $CLONE_DIR/$TARGET_FILE
-# echo ' second succeeded'
+echo "sed -i $SED_COMMAND $CLONE_DIR/$TARGET_FILE"
+sed "$SED_COMMAND" "$CLONE_DIR/$TARGET_FILE"
+sed -i "$SED_COMMAND" "$CLONE_DIR/$TARGET_FILE"
 
 ORIGIN_COMMIT="https://$GITHUB_SERVER/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
 COMMIT_MESSAGE="${COMMIT_MESSAGE/ORIGIN_COMMIT/$ORIGIN_COMMIT}"
 COMMIT_MESSAGE="${COMMIT_MESSAGE/\$GITHUB_REF/$GITHUB_REF}"
 
-echo 'Moving to lcone dir'
-cd $CLONE_DIR
+echo 'Moving to clone dir'
+cd "$CLONE_DIR"
 
 echo "[+] Adding git commit"
 git add .
@@ -91,12 +82,11 @@ echo "[+] git status:"
 git status
 
 echo "[+] git diff-index:"
-# git diff-index : to avoid doing the git commit failing if there are no changes to be commit
+# git diff-index : to avoid git commit failing if there are no changes to commit
 git diff-index --quiet HEAD || git commit --message "$COMMIT_MESSAGE"
 
 echo "[+] Pushing git commit"
-# --set-upstream: sets de branch when pushing to a branch that does not exist
-
+# --set-upstream: sets the branch when pushing to a branch that does not exist
 n=0
 until [ "$n" -ge 5 ]
 do
@@ -105,4 +95,3 @@ do
   n=$((n+1))
   sleep 5
 done
-
